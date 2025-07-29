@@ -16,8 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `asociadas`
---
+-- Table structure for table `asociadas`--
 
 DROP TABLE IF EXISTS `asociadas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
