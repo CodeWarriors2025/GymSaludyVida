@@ -13,7 +13,6 @@ EPS mediumtext,
 Estatura float,
 Peso_Corporal float
 );
-
 CREATE TABLE Pagos (
     Cedula INT NOT NULL,
     Fecha_de_pago DATE,
