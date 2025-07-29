@@ -4,7 +4,6 @@
  */
 package conectiondbgym;
 import java.sql.*;
-
 /**
  *
  * @author anend
