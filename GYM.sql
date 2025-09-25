@@ -1,70 +1,52 @@
-create database gimnasio;
+-- Crear la base de datos
+CREATE DATABASE IF NOT EXISTS gimnasio;
+USE gimnasio;
 
-use gimnasio;
-
-create table asociadas
-(
-Cedula int primary key not null,
-Nombre varchar (45) not null,
-Direccion varchar(45) not null,
-Email varchar(45) not null,
-Numero_de_contacto int not null,
-EPS mediumtext,
-Estatura float,
-Peso_Corporal float
+-- Tabla principal de asociadas
+CREATE TABLE asociadas (
+    Cedula INT PRIMARY KEY NOT NULL,
+    Nombre VARCHAR(45) NOT NULL,
+    Direccion VARCHAR(45) NOT NULL,
+    Email VARCHAR(45) NOT NULL,
+    Numero_de_contacto VARCHAR(15) NOT NULL,
+    EPS MEDIUMTEXT,
+    Estatura FLOAT,
+    Peso_Corporal FLOAT
 );
+
+-- Tabla de pagos
 CREATE TABLE Pagos (
     Cedula INT NOT NULL,
     Fecha_de_pago DATE,
     Forma_de_Pago VARCHAR(45),
     Valor DOUBLE,
-    FOREIGN KEY (Cedula) REFERENCES Asociadas(Cedula)  -- Referencia a otra tabla
+    FOREIGN KEY (Cedula) REFERENCES asociadas(Cedula) ON DELETE CASCADE
 );
 
+-- Tabla de plan de entrenamiento
 CREATE TABLE Plan_Entrenamiento (
     Cedula INT NOT NULL,
     Dia_de_la_Semana VARCHAR(45),
     Grupo_Musculos VARCHAR(45),
     Ejercicio_a_Realizar VARCHAR(45),
-    Repeticiones int,
-    Peso_a_trabajar float,
-    Series int,
-    FOREIGN KEY (Cedula) REFERENCES Pagos(Cedula) 
+    Repeticiones INT,
+    Peso_a_trabajar FLOAT,
+    Series INT,
+    FOREIGN KEY (Cedula) REFERENCES asociadas(Cedula) ON DELETE CASCADE
 );
 
+-- Tabla de plan de alimentación
 CREATE TABLE Plan_Alimentacion (
     Cedula INT NOT NULL,
     Dia_de_la_Semana VARCHAR(45),
-	Desayuno VARCHAR(45),
+    Desayuno VARCHAR(45),
     Almuerzo VARCHAR(45),
-    Cena varchar(45),
-    FOREIGN KEY (Cedula) REFERENCES Pagos(Cedula) 
+    Cena VARCHAR(45),
+    FOREIGN KEY (Cedula) REFERENCES asociadas(Cedula) ON DELETE CASCADE
 );
 
--- 1. Primero eliminar todas las claves foráneas que referencian a Cedula
-ALTER TABLE pagos DROP FOREIGN KEY fk_pagos;
-ALTER TABLE plan_alimentacion DROP FOREIGN KEY fk_plan_alimentacion_asociadas;
-ALTER TABLE plan_entrenamiento DROP FOREIGN KEY fk_plan_entrenamiento_asociadas;
-
--- 2. Cambiar el nombre en la tabla principal (asociadas)
-ALTER TABLE asociadas CHANGE COLUMN Cedula Identificacion INT NOT NULL;
-
--- 3. Cambiar el nombre en las tablas dependientes
-alter table asociadas CHANGE COLUMN Cedula Identificacion INT;
-ALTER TABLE plan_alimentacion CHANGE COLUMN Cedula Identificacion INT;
-ALTER TABLE plan_entrenamiento CHANGE COLUMN Cedula Identificacion INT;
-
--- 4. Recrear todas las claves foráneas con el nuevo nombre
-ALTER TABLE pagos ADD CONSTRAINT fk_pagos_asociadas 
-FOREIGN KEY (Identificacion) REFERENCES asociadas(Identificacion);
-
-ALTER TABLE plan_alimentacion ADD CONSTRAINT fk_plan_alimentacion_asociadas 
-FOREIGN KEY (Identificacion) REFERENCES asociadas(Identificacion);
-
-ALTER TABLE plan_entrenamiento ADD CONSTRAINT fk_plan_entrenamiento_asociadas 
-FOREIGN KEY (Identificacion) REFERENCES asociadas(Identificacion);
-
-INSERT INTO asociadas (Identificacion, Nombre, Direccion, Email, Numero_de_contacto, EPS, Estatura, Peso_Corporal) VALUES
+-- Insertar datos de asociadas
+INSERT INTO asociadas (Cedula, Nombre, Direccion, Email, Numero_de_contacto, EPS, Estatura, Peso_Corporal) VALUES
 (52632987, 'Patricia Contreras Ramirez', 'Cra 114 # 100-51 -30', 'pato.89@gmail.com', '3211223456', 'Famisanar', 1.69, 60),
 (28765432, 'María Fernanda López Gómez', 'Calle 45 # 22-10', 'mafelogo@gmail.com', '3109876543', 'Sura', 1.65, 58),
 (34567821, 'Ana Isabel Torres Méndez', 'Av 68 # 15-42', 'anatorres@hotmail.com', '3156789012', 'Nueva EPS', 1.70, 62),
@@ -86,14 +68,22 @@ INSERT INTO asociadas (Identificacion, Nombre, Direccion, Email, Numero_de_conta
 (19678901, 'Paola Andrea Núñez', 'Cra 25 # 90-15', 'paolanunez@gmail.com', '3225678901', 'Famisanar', 1.67, 61),
 (20789012, 'Diana Carolina Jiménez', 'Av 68 # 33-28', 'dianajimenez@hotmail.com', '3236789012', 'Sura', 1.69, 60);
 
+-- Insertar algunos datos de ejemplo en Pagos
+INSERT INTO Pagos (Cedula, Fecha_de_pago, Forma_de_Pago, Valor) VALUES
+(52632987, '2024-01-15', 'Efectivo', 50000),
+(28765432, '2024-01-16', 'Tarjeta', 50000),
+(34567821, '2024-01-17', 'Transferencia', 50000);
 
-ALTER TABLE asociadas MODIFY Numero_de_contacto VARCHAR(15);
+-- Insertar algunos datos de ejemplo en Plan_Entrenamiento
+INSERT INTO Plan_Entrenamiento (Cedula, Dia_de_la_Semana, Grupo_Musculos, Ejercicio_a_Realizar, Repeticiones, Peso_a_trabajar, Series) VALUES
+(52632987, 'Lunes', 'Piernas', 'Sentadillas', 15, 20.5, 3),
+(28765432, 'Martes', 'Brazo', 'Curl de bíceps', 12, 8.0, 4);
 
+-- Insertar algunos datos de ejemplo en Plan_Alimentacion
+INSERT INTO Plan_Alimentacion (Cedula, Dia_de_la_Semana, Desayuno, Almuerzo, Cena) VALUES
+(52632987, 'Lunes', 'Avena con frutas', 'Pechuga a la plancha', 'Ensalada de atún'),
+(28765432, 'Martes', 'Huevos revueltos', 'Salmón con verduras', 'Yogur griego');
 
-
-
-
-
-
-
-
+-- Consulta de verificación
+SELECT 'Base de datos creada exitosamente!' AS Mensaje;
+SELECT COUNT(*) AS Total_Asociadas FROM asociadas;
